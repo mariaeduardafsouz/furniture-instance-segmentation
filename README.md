@@ -143,8 +143,15 @@ números de mAP são os corretos — a matriz de confusão parece ter um problem
 de casamento de caixas quando as duas classes estão sempre próximas/
 sobrepostas na mesma imagem. Por isso ela não deve ser citada como está.
 
-Gráficos prontos pro relatório/apresentação estão em `report_charts/`
-(convergência treino/validação e comparação por classe). Os gráficos brutos
-gerados automaticamente pelo Ultralytics (grade de 16 painéis, curvas PR
-separadas) estão em `runs/segment/runs/furniture_seg/` — mais completos, mas
-não desenhados pra leitura direta num relatório.
+Gráficos prontos pro relatório/apresentação estão em `report_charts/`:
+convergência treino/validação, comparação por classe, e 4 exemplos de
+predição (3 corretos + 1 caso de limitação, sinalizado como tal).
+
+Os arquivos brutos gerados automaticamente pelo Ultralytics em
+`runs/segment/runs/furniture_seg/` **não são material de apresentação** —
+`train_batch*.jpg` mostra o input já embaralhado pela mosaic augmentation
+(4 imagens coladas + recorte/rotação aleatórios: é uma verificação de
+pipeline pro desenvolvedor, não é pra ser lido por humanos), e
+`val_batch*_pred.jpg`/`val_batch*_labels.jpg` são grades de predição com
+caixas grossas e rótulos sobrepostos, difíceis de ler numa apresentação —
+por isso foram refeitos como `exemplos_predicao.png`.
