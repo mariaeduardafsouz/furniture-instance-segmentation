@@ -16,12 +16,12 @@ objetos (ver "Dataset sintético" abaixo).
 
 ## Tecnologias
 
-- **Blender** (Cycles) — geração das imagens e das máscaras de segmentação
+- **Blender** (Cycles): geração das imagens e das máscaras de segmentação
   via passe de índice de objeto (Object Index / nó ID Mask no compositor)
-- **Python (bpy)** — automação da renderização e randomização de cena
-- **OpenCV** — extração de contorno das máscaras e conversão pra polígono
+- **Python (bpy)**: automação da renderização e randomização de cena
+- **OpenCV**: extração de contorno das máscaras e conversão pra polígono
   no formato YOLO-seg
-- **Ultralytics YOLOv8-seg** (PyTorch) — treinamento do modelo de
+- **Ultralytics YOLOv8-seg** (PyTorch): treinamento do modelo de
   segmentação de instâncias
 
 ## Estrutura do repositório
@@ -48,14 +48,13 @@ Link para o dataset completo: [[segmentation-dataset](https://drive.google.com/d
 
 ## Configuração antes de rodar
 
-Os scripts têm caminhos fixos que apontam pra pastas específicas desta
-máquina — ajuste antes de rodar em outro ambiente:
+Os scripts têm caminhos fixos que apontam pra pastas específicas da máquina em que o repositório foi desenvolvido — ajuste antes de rodar em outro ambiente:
 
 - **`blender/generate_dataset.py`**: a lista `hdri_paths` no topo do arquivo
   aponta pra 5 arquivos `.hdr` baixados do [Poly Haven](https://polyhaven.com/hdris):
   `brown_photostudio_02`, `cowboy_town_hall`, `glasshouse_interior`,
   `historic_cloister_passage`, `relax_inn_seaview_suite` (versão 8k). Baixe
-  e ajuste os caminhos. A variável `output_root` também precisa apontar pra onde você quer salvar
+  e ajuste os caminhos. A variável `output_root` também precisa apontar para onde você quer salvar
   o dataset.
 - **`masks_to_yolo_seg.py`** e **`train.py`**: a constante `DATA_YAML`/
   `DATASET_ROOT` no topo de cada arquivo precisa apontar pro mesmo
@@ -75,8 +74,7 @@ externo pra abrir/renderizar corretamente.
   --python blender/generate_dataset.py
 ```
 
-Motor de render é **Cycles** — o Eevee deste arquivo não popula o passe
-"Object Index" que o node ID Mask precisa.
+Motor de render é **Cycles**
 
 Gera `images/<split>/NNNNNN.png` (RGB) e `raw_masks/<split>/{table,chair}/NNNNNN.png`
 (máscaras binárias por instância).
@@ -98,9 +96,9 @@ pip install ultralytics
 python train.py
 ```
 
-Recomendado usar um ambiente virtual separado do passo 2 — `ultralytics`
-(PyTorch) e `tensorflow` puxam versões incompatíveis de `numpy` se
-instalados juntos.
+Nota: é recomendado usar um ambiente virtual separado do passo 2 (`ultralytics`
+(PyTorch) e `tensorflow` puxaram versões incompatíveis de `numpy` quando
+instalados juntos)
 
 ### 4. Testar em fotos reais
 
@@ -111,24 +109,23 @@ python report_charts/make_prediction_examples_reais.py
 ```
 
 Gera `report_charts/exemplos_predicao_reais.png` com a máscara prevista em
-cada foto — útil pra avaliar generalização fora do domínio sintético (ver
-seção "Generalização pra fotos reais").
+cada foto, o que é útil pra avaliar generalização fora do domínio sintético.
 
 ## Dataset sintético
 
 - **Objetos**: cadeira plástica monobloco (`plastic_monobloc_chair_01`) e
   mesa de madeira redonda (`round_wooden_table_01`), com posição/rotação
-  independentes — dá diversidade real de oclusão entre as duas instâncias.
+  independentes: dá diversidade real de oclusão entre as duas instâncias.
 - **Variações**:
   - Rotação Z aleatória de cada objeto e jitter de posição em X/Y a partir
     da posição-base
   - **Câmera**: em vez de coordenadas esféricas calculadas manualmente, um
-    rig de curva — a câmera (via `CameraContainer`, constraint Follow Path)
+    rig de curva, a câmera (via `CameraContainer`, constraint Follow Path)
     percorre um arco 3D ao redor da cena, sempre mirando o centro via
     constraint Track To. Um único parâmetro (`offset_factor`, 0 a 1) já dá
     posição e orientação corretas
   - **Luz principal** (point light)  energia
-    25-60W (calibrado empiricamente — ver nota abaixo)
+    25-60W
   - **Fundo/iluminação ambiente** trocado aleatoriamente entre 5 HDRIs, com
     variação de força
   - **Composição**: 25% dos renders só com a cadeira, 25% só com a mesa,
@@ -136,7 +133,7 @@ seção "Generalização pra fotos reais").
   - **Cor dos materiais** re-tingida por render (matiz/saturação/brilho), com
     faixas calibradas por classe — mesa mais escura/sutil (preserva a aparência de madeira), cadeira com faixa mais ampla (permite tons claros também)
 - **Anotação**: automática, via passe de índice de objeto do Blender
-  (`pass_index` único por objeto) + nó ID Mask no compositor — cada máscara
+  (`pass_index` único por objeto) + nó ID Mask no compositor, cada máscara
   binária já respeita oclusão real entre os objetos (buffer de
   profundidade), convertida em polígono via `cv2.findContours`.
 - **Tamanho**: 550 imagens (385 treino / 110 validação / 55 teste), 640×640.
@@ -166,7 +163,7 @@ gabarito, imagem por imagem, no split de validação): 108 de 110 imagens
 coberta pela cadeira, não confusão entre classes).
 
 **Nota sobre a matriz de confusão**: a matriz de confusão gerada
-automaticamente pelo Ultralytics (`runs/.../confusion_matrix_normalized.png`) tem resultados contrastantes com o que foi apontado acima (77-86% de acerto na diagonal), imagina-se que seja devido a um problema no casos em que há sobreposição, porém não a busca pela causa não foi aprofundada. Assim, considera-se a verificação de imagem por imagem citada acima, e é dado válido desconsiderar a matriz de confusão gerada.
+automaticamente pelo Ultralytics (`runs/.../confusion_matrix_normalized.png`) tem resultados contrastantes com o que foi apontado acima (77-86% de acerto na diagonal), imagina-se que seja devido a um problema nos casos em que há sobreposição, porém a busca pela causa não foi aprofundada. Assim, considera-se a verificação de imagem por imagem citada acima, e é dado como válido desconsiderar a matriz de confusão gerada.
 
 Gráficos estão em `report_charts/`:
 convergência treino/validação, comparação por classe, e 4 exemplos de
@@ -178,8 +175,7 @@ validação — mesa parcialmente oculta pela cadeira, não detectada).
 
 O dataset de treino é 100% sintético. Pra medir o quanto isso importa na
 prática, foram coletadas 4 fotos reais de mesa/cadeira (`fotos_reais/`,
-não usadas em nenhuma etapa do treino) e rodada a inferência do modelo nelas
-— um teste externo, fora do pipeline normal de treino/validação. Resultado
+não usadas em nenhuma etapa do treino) e rodada a inferência do modelo nelas, um teste externo, fora do pipeline normal de treino/validação. Resultado
 em `report_charts/exemplos_predicao_reais.png`.
 
 **Causas de domain gap identificadas e corrigidas ao longo do projeto**:
