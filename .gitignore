@@ -4,3 +4,4 @@ __pycache__/
 .DS_Store
 yolov8n-seg.pt
 *.blend1
+last.pt
