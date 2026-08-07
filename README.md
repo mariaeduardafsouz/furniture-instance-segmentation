@@ -143,5 +143,8 @@ números de mAP são os corretos — a matriz de confusão parece ter um problem
 de casamento de caixas quando as duas classes estão sempre próximas/
 sobrepostas na mesma imagem. Por isso ela não deve ser citada como está.
 
-Gráficos de treino (`results.png`) e exemplos de predição em imagens de
-validação (`val_batch*_pred.jpg`) estão em `runs/segment/runs/furniture_seg/`.
+Gráficos prontos pro relatório/apresentação estão em `report_charts/`
+(convergência treino/validação e comparação por classe). Os gráficos brutos
+gerados automaticamente pelo Ultralytics (grade de 16 painéis, curvas PR
+separadas) estão em `runs/segment/runs/furniture_seg/` — mais completos, mas
+não desenhados pra leitura direta num relatório.
