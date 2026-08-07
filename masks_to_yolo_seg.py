@@ -2,16 +2,18 @@
 geradas pelo compositor do Blender em anotações YOLO-seg
 (labels/<split>/NNNNNN.txt, um polígono normalizado por linha).
 
-Cada imagem tem sempre os dois objetos (mesa e cadeira) juntos no frame,
-então cada .txt de label pode ter até 2 linhas (uma por classe). Se a
-máscara de uma classe estiver vazia ou for pequena demais (objeto fora do
-quadro/quase totalmente oculto), a linha é simplesmente omitida — não é
-erro, só significa que esse objeto não é visível o suficiente nesse frame.
+Cada .txt de label pode ter até 2 linhas (uma por classe) -- na maioria dos
+frames mesa e cadeira aparecem juntas, mas uma fração é renderizada com só
+um dos dois objetos (ver randomly_set_composition em generate_dataset.py).
+Se a máscara de uma classe estiver vazia ou for pequena demais (objeto fora
+do quadro/oculto/não renderizado nesse frame), a linha é simplesmente
+omitida -- não é erro.
 
 Se um objeto ficar com o contorno partido em dois pedaços (ex: cadeira
 cortando a mesa ao meio, virando "ilha esquerda" + "ilha direita"), só o
-maior pedaço é usado — simplificação aceitável dado o prazo; o formato
+maior pedaço é usado — uma escolha de simplificação para redução de tempo; o formato
 YOLO-seg espera um polígono por instância, não vários.
+
 """
 import cv2
 import numpy as np
@@ -69,7 +71,7 @@ def main():
             stem = img_path.stem
             img = cv2.imread(str(img_path))
             if img is None:
-                print(f'Aviso: não consegui ler {img_path}, pulando')
+                print(f'Aviso: não foi possível ler {img_path}, pulando')
                 continue
             h, w = img.shape[:2]
 

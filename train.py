@@ -10,8 +10,8 @@ from ultralytics import YOLO
 DATA_YAML = "/Users/maria/FastCamp/segmentation_dataset/data.yaml"
 
 def main():
-    model = YOLO("yolov8n-seg.pt")  # nano: mais rápido de treinar, adequado
-                                      # pro tamanho do dataset (~400 imagens)
+    model = YOLO("yolov8n-seg.pt")  # nano: mais rápido de treinar
+                                
 
     model.train(
         data=DATA_YAML,

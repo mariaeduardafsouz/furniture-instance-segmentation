@@ -2,7 +2,6 @@ import csv
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 
-# --- paleta validada (references/palette.md) ---
 SURFACE = '#fcfcfb'
 INK_PRIMARY = '#0b0b0b'
 INK_SECONDARY = '#52514e'
@@ -15,7 +14,7 @@ SLOT2_ORANGE = '#eb6834'
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = ['Helvetica Neue', 'Arial', 'DejaVu Sans']
 
-CSV_PATH = '/Users/maria/FastCamp/furniture-instance-segmentation/runs/segment/runs/furniture_seg/results.csv'
+CSV_PATH = '/Users/maria/furniture-instance-segmentation/runs/segment/runs/furniture_seg-4/results.csv'
 
 epochs, train_seg, val_seg = [], [], []
 with open(CSV_PATH) as f:
@@ -57,20 +56,20 @@ ax.tick_params(axis='y', length=0, labelsize=10, colors=INK_MUTED)
 ax.tick_params(axis='x', length=0, labelsize=10, colors=INK_MUTED)
 ax.set_xlabel('Época', fontsize=10, color=INK_SECONDARY)
 
-fig.text(0.07, 0.94, 'Perda de máscara cai igual em treino e validação',
+fig.text(0.07, 0.94, 'Perda de máscara cai de forma consistente em treino e validação',
           fontsize=14, color=INK_PRIMARY, fontweight='bold', ha='left', va='top')
-fig.text(0.07, 0.87, 'Nenhum sinal de overfitting nas 60 épocas de treino',
+fig.text(0.07, 0.87, 'Gap aumenta nas últimas 10 épocas (mosaic augmentation desligado — padrão do Ultralytics)',
           fontsize=10.5, color=INK_SECONDARY, ha='left', va='top')
 
-plt.savefig('/tmp/chart_convergencia.png', facecolor=SURFACE, bbox_inches='tight', pad_inches=0.25)
+plt.savefig('/Users/maria/furniture-instance-segmentation/report_charts/convergencia_treino.png', facecolor=SURFACE, bbox_inches='tight', pad_inches=0.25)
 plt.close()
 
 # ============================================================
 # Chart B — metricas finais por classe (mascara)
 # ============================================================
 metrics = ['Precision', 'Recall', 'mAP50', 'mAP50-95']
-mesa =    [1.000, 0.975, 0.985, 0.963]
-cadeira = [0.999, 1.000, 0.995, 0.945]
+mesa =    [0.983, 0.938, 0.980, 0.932]
+cadeira = [0.996, 1.000, 0.995, 0.978]
 
 fig, ax = plt.subplots(figsize=(7.5, 4.2), dpi=200)
 fig.patch.set_facecolor(SURFACE)
@@ -116,7 +115,7 @@ ax.set_title('As duas classes têm desempenho equivalente',
               fontsize=14, color=INK_PRIMARY, fontweight='bold', loc='left', pad=44)
 
 plt.tight_layout()
-plt.savefig('/tmp/chart_metricas_classe.png', facecolor=SURFACE, bbox_inches='tight')
+plt.savefig('/Users/maria/furniture-instance-segmentation/report_charts/metricas_por_classe.png', facecolor=SURFACE, bbox_inches='tight')
 plt.close()
 
-print('OK: /tmp/chart_convergencia.png, /tmp/chart_metricas_classe.png')
+print('OK: report_charts/convergencia_treino.png, report_charts/metricas_por_classe.png')

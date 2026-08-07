@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 
-MODEL_PATH = '/Users/maria/FastCamp/furniture-instance-segmentation/runs/segment/runs/furniture_seg/weights/best.pt'
+MODEL_PATH = '/Users/maria/furniture-instance-segmentation/runs/segment/runs/furniture_seg-4/weights/best.pt'
 VAL_DIR = Path('/Users/maria/FastCamp/segmentation_dataset/images/val')
-OUT_DIR = Path('/Users/maria/FastCamp/furniture-instance-segmentation/report_charts')
+OUT_DIR = Path('/Users/maria/furniture-instance-segmentation/report_charts')
 
 # paleta validada — mesma usada nos graficos de metricas
 CLASS_COLOR = {0: (42, 120, 214), 1: (235, 104, 52)}   # 0 = MesaMadeira (azul), 1 = CadeiraPlastico (laranja)
@@ -19,8 +19,7 @@ model = YOLO(MODEL_PATH)
 
 
 def render_prediction(img_path, conf=0.25):
-    '''Desenha mascara + contorno fino + rotulo pequeno — sem caixa grossa,
-    sem texto de confianca competindo por espaco, uma etiqueta por objeto.'''
+    '''Desenha mascara'''
     result = model.predict(str(img_path), conf=conf, verbose=False)[0]
     img = Image.open(img_path).convert('RGBA')
     overlay = Image.new('RGBA', img.size, (0, 0, 0, 0))
@@ -63,7 +62,7 @@ examples = [
     ('000005', 'Cores e ângulo variados', False),
     ('000045', 'Vista frontal', False),
     ('000060', 'Fundo complexo', False),
-    ('000024', 'Limitação: mesa quase toda oculta pela cadeira — não detectada', True),
+    ('000049', 'Limitação: mesa parcialmente\ncoberta pela cadeira — não detectada', True),
 ]
 
 fig, axes = plt.subplots(1, 4, figsize=(16, 4.6), dpi=200)
@@ -80,7 +79,7 @@ for ax, (stem, caption, is_limitation) in zip(axes, examples):
     ax.set_title(caption, fontsize=10.5, color=color, pad=8,
                  fontweight='bold' if is_limitation else 'normal')
 
-fig.suptitle('Predições do modelo em imagens de validação (não usadas no treino)',
+fig.suptitle('Predições do modelo em imagens de validação (sintéticas)',
               fontsize=14, color=INK_PRIMARY, fontweight='bold', x=0.02, ha='left', y=1.04)
 
 plt.tight_layout()
